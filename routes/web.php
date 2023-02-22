@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\{
     TesteController
 };
 
+use App\Http\Controllers\{
+    ProductController
+};
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,6 +18,19 @@ use App\Http\Controllers\Admin\{
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::resource('products', ProductController::class); //->middleware('auth')
+
+// Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+// Route::put('products/{id}', [ProductController::class, 'update'])->name('products.update');
+// Route::get('products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+// Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
+// Route::get('products/{id}', [ProductController::class, 'show'])->name('products.show');
+// Route::get('products', [ProductController::class, 'index'])->name('products.index');
+// Route::post('products', [ProductController::class, 'store'])->name('products.store');
+
+Route::get('/login', function() {
+    return 'Login';
+})->name('login');
 
 //Trabalhando com grupos de rotas
 // Route::middleware([])->group(function() {
@@ -37,7 +53,7 @@ use App\Http\Controllers\Admin\{
 //         });
 //     });
 // });
-
+/*
 Route::group([
     'middleware' => [],
     'prefix' => 'admin',
@@ -55,10 +71,6 @@ Route::group([
         })->name('admin.home');
     });
 });
-
-Route::get('/login', function() {
-    return 'Login';
-})->name('login');
 
 //Redirect utilizando name() e route()
 Route::get('redirect3', function() {
@@ -117,3 +129,4 @@ Route::get('/empresa', function() {
 Route::get('/', function () {
     return 'Olá';
 });
+*/
