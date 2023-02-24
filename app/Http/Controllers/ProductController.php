@@ -27,7 +27,15 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return 'Listagem dos produtos';
+        $teste = 123;
+
+        $teste2 = 321;
+
+        $teste3 = [1,2,3,4,5];
+        
+        $products = ['tv', 'ar condicionado', 'geladeira', 'celular'];
+
+        return view('admin.pages.products.index', compact('teste', 'teste2', 'teste3', 'products'));
     }
 
     /**
@@ -35,7 +43,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.pages.products.create');
     }
 
     /**
@@ -43,7 +51,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        // dd($request->only(['name', 'description']));
+        // dd($request->name);
+        // dd($request->input('teste', 'default'));
+        // dd($request->except('_token', 'name'));
+        if ($request->file('arquivo')->isValid()) {
+            // dd($request->file('arquivo')->store('products'));
+
+            $nameFile = $request->name . '.' . $request->photo->extension();
+
+            dd($request->file('arquivo')->storeAs('products', $nameFile));
+        }
     }
 
     /**
@@ -59,7 +78,7 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('admin.pages.products.edit', compact('id'));
     }
 
     /**
