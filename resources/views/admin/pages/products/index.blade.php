@@ -3,11 +3,34 @@
 @section('title', 'Gestão de Produtos')
 
 @section('content')
+
     <h1>Exibindo os produtos</h1>
 
     <a href="{{ route('products.create') }}">Cadastrar</a>
 
-    @component('admin.components.card')
+    <table class="table-auto">
+        <thead>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </thead>
+        <tbody>
+            @foreach ($products as $product)
+            <tr>
+                <td>{{ $product->name}}</td>
+                <td>{{ $product->price }}</td>
+                <td>{{ $product->description }}</td>
+                <td>
+                    <a href="">Detalhes</a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    {!! $products->links() !!}
+
+    {{-- @component('admin.components.card')
         @slot('title')
             <h1>título do card</h1>
         @endslot
@@ -31,7 +54,7 @@
         <h1 class="@if($loop->first) last @endif">{{ $product }}</h1>
     @empty
         <p>Não existem produtos cadastrados</p>    
-    @endforelse
+    @endforelse --}}
     
     {{-- @if ($teste === '123')
         <p>É igual</p>
@@ -68,13 +91,13 @@
     @endguest --}}
 @endsection
 
-@push('styles')
+{{-- @push('styles')
     <style>
         .last, .first {
             background: #CCC;
         }
     </style>
-@endpush
+@endpush --}}
 
 {{-- @push('scripts')
     <script>

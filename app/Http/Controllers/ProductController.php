@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateProductRequest;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -27,16 +28,12 @@ class ProductController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $teste = 123;
+    {        
+        $products = Product::paginate();
 
-        $teste2 = 321;
-
-        $teste3 = [1,2,3,4,5];
-        
-        $products = ['tv', 'ar condicionado', 'geladeira', 'celular'];
-
-        return view('admin.pages.products.index', compact('teste', 'teste2', 'teste3', 'products'));
+        return view('admin.pages.products.index', [
+            'products' => $products,
+        ]);
     }
 
     /**
@@ -79,7 +76,17 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // $product = Product::where('id', $id)->first();
+        
+        $product = Product::find($id);
+
+        if (!$product) {
+            return redirect()->back();
+        }
+
+        return view('admin.pages.products.show', [
+            'product' => $product,
+        ]);
     }
 
     /**
