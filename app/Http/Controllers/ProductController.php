@@ -9,10 +9,12 @@ use App\Models\Product;
 class ProductController extends Controller
 {
     protected $request;
+    private $product;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Product $product)
     {
         $this->request = $request;
+        $this->product = $product;
 
         // $this->middleware('auth');
         
@@ -29,7 +31,7 @@ class ProductController extends Controller
      */
     public function index()
     {        
-        $products = Product::paginate();
+        $products = $this->product->paginate();
 
         return view('admin.pages.products.index', [
             'products' => $products,
@@ -49,26 +51,30 @@ class ProductController extends Controller
      */
     public function store(StoreUpdateProductRequest $request)
     {
+        $data = $request->only('name', 'description', 'price');
+
+        $product = $this->product->create($data);
+
+        return redirect()->route('products.index');
+
         // $request->validate([
         //     'name'          => 'required|min:3|max:255',
         //     'description'   => 'nullable|min:3|max:2000',
         //     'arquivo'       => 'required|image',
         // ]);
 
-        dd('OK');
-
         // dd($request->all());
         // dd($request->only(['name', 'description']));
         // dd($request->name);
         // dd($request->input('teste', 'default'));
         // dd($request->except('_token', 'name'));
-        if ($request->file('arquivo')->isValid()) {
-            // dd($request->file('arquivo')->store('products'));
+        // if ($request->file('arquivo')->isValid()) {
+        //     dd($request->file('arquivo')->store('products'));
             
-            $nameFile = $request->name . '.' . $request->photo->extension();
+        //     $nameFile = $request->name . '.' . $request->photo->extension();
 
-            dd($request->file('arquivo')->storeAs('products', $nameFile));
-        }
+        //     dd($request->file('arquivo')->storeAs('products', $nameFile));
+        // }
     }
 
     /**
@@ -78,7 +84,7 @@ class ProductController extends Controller
     {
         // $product = Product::where('id', $id)->first();
         
-        $product = Product::find($id);
+        $product = $this->product->find($id);
 
         if (!$product) {
             return redirect()->back();
@@ -94,7 +100,13 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        return view('admin.pages.products.edit', compact('id'));
+        $product = $this->product->find($id);
+
+        if (!$product) {
+            return redirect()->back();
+        }
+
+        return view('admin.pages.products.edit', compact('product'));
     }
 
     /**
@@ -110,6 +122,14 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = $this->product->where('id', $id)->first();
+
+        if (!$product) {
+            return redirect()->back();
+        }
+
+        $product->delete();
+
+        return redirect()->route('products.index');
     }
 }
