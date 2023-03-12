@@ -33,6 +33,8 @@ class ProductController extends Controller
     {        
         $products = $this->product->paginate();
 
+        // dd($products);
+
         return view('admin.pages.products.index', [
             'products' => $products,
         ]);
