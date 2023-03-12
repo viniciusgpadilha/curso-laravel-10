@@ -19,9 +19,9 @@ use App\Http\Controllers\{
 |
 */
 
-Route::any('products/search', [ProductController::class, 'search'])->name('products.search');
+Route::any('products/search', [ProductController::class, 'search'])->name('products.search')->middleware('auth');
 
-Route::resource('products', ProductController::class); //->middleware('auth')
+Route::resource('products', ProductController::class)->middleware('auth');
 
 // Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 // Route::put('products/{id}', [ProductController::class, 'update'])->name('products.update');
@@ -34,6 +34,14 @@ Route::resource('products', ProductController::class); //->middleware('auth')
 Route::get('/login', function() {
     return 'Login';
 })->name('login');
+
+Auth::routes();
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Trabalhando com grupos de rotas
 // Route::middleware([])->group(function() {
@@ -129,11 +137,7 @@ Route::get('/empresa', function() {
     return 'Empresa';
 });
 
-Route::get('/', function () {
-    return 'Olá';
-});
+
 */
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
