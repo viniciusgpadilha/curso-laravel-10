@@ -21,6 +21,15 @@ class Product extends Model
         'arquivo',
     ];
 
+    public function search($filter = null)
+    {
+        $results = $this->where(function ($query) use ($filter) {
+            if ($filter) {
+                $query->where('name', 'LIKE', "%{$filter}%");
+            }
+        })->paginate();
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -8,7 +8,8 @@
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="mb-3 ">
-                <h5 class="card-title">Lista de Produtos <span class="text-muted fw-normal">({{ $products->total() }})</span></h5>
+                {{-- {{ $products->total() }} --}}
+                <h5 class="card-title">Lista de Produtos <span class="text-muted fw-normal">()</span></h5>
             </div>
         </div>
         <div class="col-md-6">
@@ -20,8 +21,20 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <a href="{{ route('products.create') }}" class="btn btn-secondary"><i class="bx bx-plus me-1"></i>Adicionar Produto</a>
+                <div style="display:flex" class="row">
+                    <div class="col">
+                        <form class="form" action="{{ route('products.search') }}" method="post">
+                            @csrf
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Filtrar" aria-label="Filtrar" name="filter" id="filter" aria-describedby="button-addon2">
+                                <button class="btn btn-outline-secondary" type="submit">Pesquisar</button>
+                              </div>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <a href="{{ route('products.create') }}" class="col btn btn-secondary"><i class="bx bx-plus me-1"></i>Adicionar Produto</a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -42,7 +55,12 @@
                         <tbody>
                             @foreach ($products as $product)
                             <tr>
-                                <td><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="avatar-sm rounded-circle me-2" />
+                                <td>
+                                    @if ($product->arquivo)
+                                        <img src="{{ asset("storage/$product->arquivo") }}" alt="{{ $product->arquivo }}" class="avatar-sm rounded-circle me-2" />
+                                    @else
+                                        <img src="{{ asset("storage/products/nope.jpg") }}" alt="" class="avatar-sm rounded-circle me-2" />
+                                    @endif
                                     <a href="{{ route('products.show', ['product' => $product]) }}" class="text-body">{{ $product->name }}</a>
                                 </td>
                                 <td>{{ $product->description}}</td>
@@ -63,7 +81,7 @@
                     </table>
                 </div>
             </div>
-        </div> 
+        </div>
     {!! $products->links() !!}
 </div>
 
@@ -75,7 +93,7 @@
     @endslot
     <p>card de exemplo</p>
 @endcomponent
-    
+
 
 @include('admin.includes.alerts', ['content' => 'Alerta de preços de produtos'])
 
@@ -92,7 +110,7 @@
 @forelse ($products as $product)
     <h1 class="@if($loop->first) last @endif">{{ $product }}</h1>
 @empty
-    <p>Não existem produtos cadastrados</p>    
+    <p>Não existem produtos cadastrados</p>
 @endforelse --}}
 
 {{-- @if ($teste === '123')
@@ -104,7 +122,7 @@
 @endif
 
 @unless($teste === '123')
-    <p>A menos que</p> 
+    <p>A menos que</p>
 @else
     <p>É igual</p>
 @endunless

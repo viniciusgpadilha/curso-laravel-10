@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUpdateProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
         $this->product = $product;
 
         // $this->middleware('auth');
-        
+
         // $this->middleware('auth')->only([
         //     'create', 'store'
         // ]);
@@ -30,7 +31,7 @@ class ProductController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {        
+    {
         $products = $this->product->paginate();
 
         // dd($products);
@@ -55,6 +56,14 @@ class ProductController extends Controller
     {
         $data = $request->only('name', 'description', 'price');
 
+        if ($request->hasFile('arquivo') && $request->file('arquivo')->isValid()) {
+            $imagePath = $request->arquivo->store('products');
+
+            // $nameFile = $request->name . '.' . $request->photo->extension();
+
+            $data['arquivo'] = $imagePath;
+        }
+
         $product = $this->product->create($data);
 
         return redirect()->route('products.index');
@@ -70,13 +79,7 @@ class ProductController extends Controller
         // dd($request->name);
         // dd($request->input('teste', 'default'));
         // dd($request->except('_token', 'name'));
-        // if ($request->file('arquivo')->isValid()) {
-        //     dd($request->file('arquivo')->store('products'));
-            
-        //     $nameFile = $request->name . '.' . $request->photo->extension();
 
-        //     dd($request->file('arquivo')->storeAs('products', $nameFile));
-        // }
     }
 
     /**
@@ -85,7 +88,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         // $product = Product::where('id', $id)->first();
-        
+
         $product = $this->product->find($id);
 
         if (!$product) {
@@ -114,9 +117,29 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreUpdateProductRequest $request, string $id)
     {
-        //
+        if (!$product = $this->product->find($id)) {
+            return redirect()->back();
+        }
+
+        $data = $request->all();
+
+        if ($request->hasFile('arquivo') && $request->file('arquivo')->isValid()) {
+            if ($product->arquivo && Storage::exists($product->arquivo)) {
+                Storage::delete($product->arquivo);
+            }
+
+            $imagePath = $request->arquivo->store('products');
+
+            // $nameFile = $request->name . '.' . $request->photo->extension();
+
+            $data['arquivo'] = $imagePath;
+        }
+
+        $product->update($data);
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -130,8 +153,21 @@ class ProductController extends Controller
             return redirect()->back();
         }
 
+        if ($product->arquivo && Storage::exists($product->arquivo)) {
+            Storage::delete($product->arquivo);
+        }
+
         $product->delete();
 
         return redirect()->route('products.index');
+    }
+
+    public function search(Request $request)
+    {
+        $products = $this->product->search($request->filter);
+
+        return view('admin.pages.products.index', [
+            'products' => $products,
+        ]);
     }
 }

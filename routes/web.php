@@ -18,6 +18,9 @@ use App\Http\Controllers\{
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::any('products/search', [ProductController::class, 'search'])->name('products.search');
+
 Route::resource('products', ProductController::class); //->middleware('auth')
 
 // Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
@@ -41,11 +44,11 @@ Route::get('/login', function() {
 
 //             Route::name('admin.')->group(function() {
 //                 Route::get('/dashboard', [TesteController::class, 'dashboard'])->name('dashboard');
-            
+
 //                 Route::get('/financeiro', [TesteController::class, 'financeiro'])->name('financeiro');
-                
+
 //                 Route::get('/produtos', [TesteController::class, 'products'])->name('products');
-        
+
 //                 Route::get('/', function() {
 //                     return redirect()->route('admin.dashboard');
 //                 })->name('admin.home');
@@ -61,9 +64,9 @@ Route::group([
 ], function(){
     Route::name('admin.')->group(function() {
         Route::get('/dashboard', [TesteController::class, 'dashboard'])->name('dashboard');
-    
+
         Route::get('/financeiro', [TesteController::class, 'financeiro'])->name('financeiro');
-        
+
         Route::get('/produtos', [TesteController::class, 'products'])->name('products');
 
         Route::get('/', function() {
